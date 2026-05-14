@@ -75,7 +75,7 @@ export abstract class Personagem {
     }
 
     public usarCura(): void {
-        // Cada personagem pode se curar apenas uma vez quando a vida chega a 50 ou menos.
+        // Cada personagem pode se curar uma vez quando a vida chega a 50 ou menos.
         if (this.vida <= 50 && !this.jaUsouCura && this.continuaVivo()) {
             this.vida = this.vida + this.cura;
 
@@ -89,7 +89,7 @@ export abstract class Personagem {
     }
 
     protected gerarAtaque(): number {
-        // Sorteia uma variação de ataque para personagens com golpes diferentes.
+        // Sorteia uma variacao de ataque para personagens com golpes diferentes.
         return Math.floor(Math.random() * 3) + 1;
     }
 

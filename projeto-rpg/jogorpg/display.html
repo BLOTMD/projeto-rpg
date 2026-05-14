@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Batalha Épica</title>
+    <title>Batalha Epica</title>
 </head>
 <body>
 
-    <!-- Titulo principal do jogo. -->
+    <!-- Titulo principal exibido acima da arena. -->
     <div class="centralizada">
-        <h1>BATALHA ÉPICA</h1>
+        <h1>BATALHA EPICA</h1>
     </div>
 
     <!-- Arena com os dois cards dos jogadores. -->
@@ -23,6 +23,8 @@
                     <option value="cavaleiro">Cavaleiro</option>
                     <option value="mago">Mago</option>
                     <option value="assassino">Assassino</option>
+                    <option value="banguela">Banguela</option>
+                    <option value="arqueiro" selected>Arqueiro</option>
                 </select>
             </div>
 
@@ -52,6 +54,8 @@
                     <option value="cavaleiro">Cavaleiro</option>
                     <option value="mago" selected>Mago</option>
                     <option value="assassino">Assassino</option>
+                    <option value="banguela">Banguela</option>
+                    <option value="arqueiro">Arqueiro</option>
                 </select>
             </div>
 
@@ -73,7 +77,7 @@
     <!-- Botoes que controlam inicio, avanco de turno e reinicio da batalha. -->
     <div class="centralizada botoes">
         <button id="botaojogar">START</button>
-        <button id="proximo" disabled>PRÓXIMO TURNO</button>
+        <button id="proximo" disabled>PROXIMO TURNO</button>
         <button id="reiniciar">REINICIAR</button>
     </div>
 
@@ -81,7 +85,7 @@
     <div class="console">
         <h2>Console.log</h2>
         <div id="log">
-            Escolha os personagens e clique em START para começar a batalha.
+            Escolha os personagens e clique em START para comecar a batalha.
         </div>
     </div>
 

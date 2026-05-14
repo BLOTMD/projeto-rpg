@@ -1,7 +1,7 @@
-import { Personagem } from "./personagem.ts";
+import { Personagem } from "../personagem.ts";
 
 export class Wizard extends Personagem {
-    // Mago: causa bastante dano, mas tem menos vida e defesa.
+    // Mago: alto dano e cura forte, mas pouca vida e baixa defesa.
     constructor(
         nome: string,
         forca: number,
@@ -9,13 +9,13 @@ export class Wizard extends Personagem {
         defesa: number,
         cura: number,
         imagemNormal: string,
-        imagemPoucaVida: string = ""
+        imagemPoucaVida: string,
     ) {
         super(nome, forca, vida, defesa, cura, imagemNormal, imagemPoucaVida);
     }
 
     public atacar(persona: Personagem): void {
-        // O ataque do mago é sorteado entre fogo, terra e gelo.
+        // Sorteia a magia do turno entre fogo, terra e gelo.
         const magia = this.gerarAtaque();
 
         if (magia === 1) {

@@ -1,9 +1,11 @@
-import { Wizard } from "./wizard.ts";
-import { Knight } from "./knight.ts";
-import { Assassino } from "./assassino.ts";
+import { Wizard } from "./Personagens/wizard.ts";
+import { Knight } from "./Personagens/knight.ts";
+import { Assassino } from "./Personagens/assassino.ts";
+import { Banguela } from "./Personagens/banguela.ts";
+import { Arqueiro } from "./Personagens/arqueiro.ts";
 import { Personagem } from "./personagem.ts";
 
-type TipoPersonagem = "cavaleiro" | "mago" | "assassino";
+type TipoPersonagem = "cavaleiro" | "mago" | "assassino" | "banguela" | "arqueiro";
 
 type ImagensPersonagem = {
     normal: string;
@@ -11,7 +13,7 @@ type ImagensPersonagem = {
     ataque: string;
 };
 
-// Mapa usado para trocar as imagens conforme o personagem e o estado da batalha.
+// Centraliza as imagens usadas por cada personagem em estado normal, pouca vida e ataque.
 const IMAGENS_PERSONAGENS: Record<TipoPersonagem, ImagensPersonagem> = {
     cavaleiro: {
         normal: "https://static.wikia.nocookie.net/sss/images/3/33/Knight1.jpg/revision/latest?cb=20180424234257&path-prefix=pt-br",
@@ -27,6 +29,16 @@ const IMAGENS_PERSONAGENS: Record<TipoPersonagem, ImagensPersonagem> = {
         normal: "imagens/assassino.normal.webp",
         poucaVida: "imagens/assassino.lowHp.png",
         ataque: "imagens/assassino.ataque.png"
+    },
+    banguela: {
+        normal: "imagens/banguela.normal.png",
+        poucaVida: "imagens/banguela.lowHp.jpg",
+        ataque: "imagens/banguela.ataque.png"
+    },
+    arqueiro: {
+        normal: "imagens/arqueiro.normal.png",
+        poucaVida: "imagens/arqueiro.lowHp.png",
+        ataque: "imagens/arqueiro.ataque.webp"
     }
 };
 
@@ -56,10 +68,10 @@ function criarPersonagem(tipo: TipoPersonagem): Personagem {
     if (tipo === "cavaleiro") {
         return new Knight(
             "Cavaleiro",
+            75,
+            360,
             60,
-            300,
-            50,
-            100,
+            70,
             IMAGENS_PERSONAGENS.cavaleiro.normal,
             IMAGENS_PERSONAGENS.cavaleiro.poucaVida
         );
@@ -68,31 +80,58 @@ function criarPersonagem(tipo: TipoPersonagem): Personagem {
     if (tipo === "mago") {
         return new Wizard(
             "Mago",
-            90,
-            200,
-            20,
+            95,
+            190,
+            15,
             150,
             IMAGENS_PERSONAGENS.mago.normal,
             IMAGENS_PERSONAGENS.mago.poucaVida
         );
     }
 
-    return new Assassino(
-        "Assassino",
-        85,
-        250,
-        30,
-        90,
-        IMAGENS_PERSONAGENS.assassino.normal,
-        IMAGENS_PERSONAGENS.assassino.poucaVida
-    );
+    if (tipo === "assassino") {
+        return new Assassino(
+            "Assassino",
+            70,
+            230,
+            25,
+            80,
+            IMAGENS_PERSONAGENS.assassino.normal,
+            IMAGENS_PERSONAGENS.assassino.poucaVida
+        );
+    }
+
+    if (tipo === "banguela") {
+        return new Banguela(
+            "Banguela",
+            105,
+            240,
+            35,
+            60,
+            IMAGENS_PERSONAGENS.banguela.normal,
+            IMAGENS_PERSONAGENS.banguela.poucaVida
+        );
+    }
+    if (tipo === "arqueiro") {
+        return new Arqueiro(
+            "Arqueiro",
+            65,
+            220,
+            20,
+            100,
+            IMAGENS_PERSONAGENS.arqueiro.normal,
+            IMAGENS_PERSONAGENS.arqueiro.poucaVida
+        );
+    }
+
+    throw new Error("Tipo de personagem invalido: " + tipo);
 }
 
 function getTipoSelecionado(seletor: HTMLSelectElement): TipoPersonagem {
     // Garante que apenas tipos válidos sejam usados para criar personagens.
     const valor = seletor.value;
 
-    if (valor === "mago" || valor === "assassino" || valor === "cavaleiro") {
+    if (valor === "mago" || valor === "assassino" || valor === "cavaleiro" || valor === "banguela" || valor === "arqueiro") {
         return valor;
     }
 
@@ -128,10 +167,10 @@ function iniciarJogo(): void {
     const log = document.getElementById("log") as HTMLDivElement;
     log.innerHTML = "";
 
-    escreverLog("A batalha começou!");
+    escreverLog("A batalha comecou!");
     escreverLog("Jogador 1 escolheu: " + jogadorUm.nome + ".");
     escreverLog("Jogador 2 escolheu: " + jogadorDois.nome + ".");
-    escreverLog("Clique em PRÓXIMO TURNO para continuar.");
+    escreverLog("Clique em PROXIMO TURNO para continuar.");
 
     botaoStart.disabled = true;
     botaoProximo.disabled = false;
@@ -230,7 +269,7 @@ function reiniciarJogo(): void {
     seletorJogadorDois.disabled = false;
 
     const log = document.getElementById("log") as HTMLDivElement;
-    log.innerHTML = "Escolha os personagens e clique em START para começar a batalha.";
+    log.innerHTML = "Escolha os personagens e clique em START para comecar a batalha.";
 
     removerClassesDeAnimacao();
     atualizarTela();
