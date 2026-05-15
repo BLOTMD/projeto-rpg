@@ -9,7 +9,7 @@ body {
     color: white;
 }
 
-.centralizada {
+.centered {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -23,7 +23,7 @@ h1 {
     text-shadow: 0 0 12px black;
 }
 
-.aviso-imagens {
+.image-warning {
     width: 90%;
     max-width: 950px;
     margin: 0 auto 18px auto;
@@ -36,7 +36,7 @@ h1 {
     text-align: center;
 }
 
-.alinhar {
+.align {
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -48,7 +48,7 @@ h1 {
     gap: 25px;
 }
 
-.card-personagem {
+.character-card {
     background: #24243e;
     border: 2px solid #44446b;
     border-radius: 14px;
@@ -59,7 +59,7 @@ h1 {
     transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-.area-selecao {
+.selection-area {
     display: flex;
     gap: 10px;
     justify-content: center;
@@ -67,7 +67,7 @@ h1 {
     margin-bottom: 12px;
 }
 
-.area-selecao label {
+.selection-area label {
     font-weight: bold;
     color: #ffdd66;
 }
@@ -87,7 +87,7 @@ select:disabled {
     cursor: not-allowed;
 }
 
-.card-personagem img {
+.character-card img {
     width: 400px;
     height: 250px;
     max-width: 100%;
@@ -97,11 +97,11 @@ select:disabled {
     transition: transform 0.2s, filter 0.2s, border-color 0.2s;
 }
 
-.card-personagem h2 {
+.character-card h2 {
     margin: 12px 0 5px 0;
 }
 
-.card-personagem h3 {
+.character-card h3 {
     margin: 6px 0 10px 0;
 }
 
@@ -116,7 +116,7 @@ select:disabled {
     text-shadow: 0 0 14px #000;
 }
 
-.barra-vida {
+.health-bar {
     width: 100%;
     height: 24px;
     background: #3b3b3b;
@@ -125,57 +125,57 @@ select:disabled {
     overflow: hidden;
 }
 
-.vida {
+.health {
     height: 100%;
     width: 100%;
     background: linear-gradient(90deg, #29c44d, #7dff91);
     transition: width 0.4s, background 0.4s;
 }
 
-.vida.vida-amarela {
+.health.health-yellow {
     background: linear-gradient(90deg, #d6b51f, #fff176);
 }
 
-.vida.vida-vermelha {
+.health.health-red {
     background: linear-gradient(90deg, #b91c1c, #ff5252);
 }
 
-.vida-baixa {
+.low-health {
     border-color: #ff5252;
     box-shadow: 0 0 22px rgba(255, 82, 82, 0.55);
-    animation: pulsoVidaBaixa 0.9s infinite alternate;
+    animation: lowHealthPulse 0.9s infinite alternate;
 }
 
-.vida-baixa img {
+.low-health img {
     border-color: #ff5252;
     filter: saturate(1.15) contrast(1.08);
 }
 
-.atacando-direita {
-    animation: atacarDireita 0.75s ease-in-out;
+.attacking-right {
+    animation: attackRight 0.75s ease-in-out;
 }
 
-.atacando-esquerda {
-    animation: atacarEsquerda 0.75s ease-in-out;
+.attacking-left {
+    animation: attackLeft 0.75s ease-in-out;
 }
 
-.recebendo-dano {
-    animation: receberDano 0.45s ease-in-out;
+.taking-damage {
+    animation: takeDamage 0.45s ease-in-out;
 }
 
-@keyframes atacarDireita {
+@keyframes attackRight {
     0% { transform: translateX(0) scale(1); }
     45% { transform: translateX(34px) scale(1.06) rotate(1deg); }
     100% { transform: translateX(0) scale(1); }
 }
 
-@keyframes atacarEsquerda {
+@keyframes attackLeft {
     0% { transform: translateX(0) scale(1); }
     45% { transform: translateX(-34px) scale(1.06) rotate(-1deg); }
     100% { transform: translateX(0) scale(1); }
 }
 
-@keyframes receberDano {
+@keyframes takeDamage {
     0% { transform: translateX(0); filter: brightness(1); }
     20% { transform: translateX(-8px); filter: brightness(1.8) sepia(1) hue-rotate(-45deg) saturate(3); }
     40% { transform: translateX(8px); }
@@ -184,12 +184,12 @@ select:disabled {
     100% { transform: translateX(0); filter: brightness(1); }
 }
 
-@keyframes pulsoVidaBaixa {
+@keyframes lowHealthPulse {
     from { box-shadow: 0 0 12px rgba(255, 82, 82, 0.35); }
     to { box-shadow: 0 0 26px rgba(255, 82, 82, 0.85); }
 }
 
-.botoes {
+.buttons {
     gap: 15px;
     margin: 25px 0;
 }
@@ -243,12 +243,12 @@ button:disabled {
     font-family: Consolas, monospace;
 }
 
-.linha-log {
+.log-line {
     margin-bottom: 6px;
 }
 
 @media (max-width: 950px) {
-    .alinhar {
+    .align {
         flex-direction: column;
     }
 

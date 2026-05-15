@@ -1,480 +1,508 @@
 (() => {
-  // personagem.ts
-  var Personagem = class {
+  // character.ts
+  var Character = class {
     // Classe base com os atributos e regras compartilhadas por todos os lutadores.
-    nome;
-    forca;
-    vida;
-    vidaMaxima;
-    defesa;
-    cura;
-    jaUsouCura = false;
-    imagemNormal = "";
-    imagemPoucaVida = "";
-    constructor(nome, forca, vida, defesa, cura, imagemNormal, imagemPoucaVida = "") {
-      this.nome = nome;
-      this.forca = forca;
-      this.vida = vida;
-      this.vidaMaxima = vida;
-      this.defesa = defesa;
-      this.cura = cura;
-      this.imagemNormal = imagemNormal;
-      this.imagemPoucaVida = imagemPoucaVida;
+    name;
+    strength;
+    health;
+    maxHealth;
+    defense;
+    heal;
+    hasUsedHeal = false;
+    normalImage = "";
+    lowHealthImage = "";
+    attackBuffs = [0, 10, 20, 30];
+    constructor(name, strength, health, defense, heal, normalImage, lowHealthImage = "") {
+      this.name = name;
+      this.strength = strength;
+      this.health = health;
+      this.maxHealth = health;
+      this.defense = defense;
+      this.heal = heal;
+      this.normalImage = normalImage;
+      this.lowHealthImage = lowHealthImage;
     }
-    continuaVivo() {
-      return this.vida > 0;
+    isAlive() {
+      return this.health > 0;
     }
-    getVida() {
-      return this.vida;
+    getHealth() {
+      return this.health;
     }
-    getVidaMaxima() {
-      return this.vidaMaxima;
+    getMaxHealth() {
+      return this.maxHealth;
     }
-    getPorcentagemVida() {
-      return this.vida / this.vidaMaxima * 100;
+    getHealthPercentage() {
+      return this.health / this.maxHealth * 100;
     }
-    estaComPoucaVida() {
-      return this.getPorcentagemVida() <= 35 && this.continuaVivo();
+    hasLowHealth() {
+      return this.getHealthPercentage() <= 35 && this.isAlive();
     }
-    getImg() {
-      if (this.estaComPoucaVida() && this.imagemPoucaVida.trim() !== "") {
-        return this.imagemPoucaVida;
+    getImage() {
+      if (this.hasLowHealth() && this.lowHealthImage.trim() !== "") {
+        return this.lowHealthImage;
       }
-      return this.imagemNormal;
+      return this.normalImage;
     }
-    sofrerDano(dano) {
-      let danoFinal = dano - this.defesa;
-      if (danoFinal < 1) {
-        danoFinal = 1;
+    takeDamage(damage) {
+      let finalDamage = damage - this.defense;
+      if (finalDamage < 1) {
+        finalDamage = 1;
       }
-      this.vida = this.vida - danoFinal;
-      if (this.vida < 0) {
-        this.vida = 0;
+      this.health = this.health - finalDamage;
+      if (this.health < 0) {
+        this.health = 0;
       }
-      escreverLog(this.nome + " recebeu " + danoFinal + " de dano. Vida atual: " + this.vida);
+      writeLog(this.name + " took " + finalDamage + " damage. Current health: " + this.health);
     }
-    usarCura() {
-      if (this.vida <= 50 && !this.jaUsouCura && this.continuaVivo()) {
-        this.vida = this.vida + this.cura;
-        if (this.vida > this.vidaMaxima) {
-          this.vida = this.vidaMaxima;
+    useHeal() {
+      if (this.health <= 50 && !this.hasUsedHeal && this.isAlive()) {
+        this.health = this.health + this.heal;
+        if (this.health > this.maxHealth) {
+          this.health = this.maxHealth;
         }
-        this.jaUsouCura = true;
-        escreverLog(this.nome + " usou cura e ficou com " + this.vida + " de vida.");
+        this.hasUsedHeal = true;
+        writeLog(this.name + " used heal and now has " + this.health + " health.");
       }
     }
-    gerarAtaque() {
+    rollAttack() {
       return Math.floor(Math.random() * 3) + 1;
     }
+    rollAttackBuff() {
+      const buffIndex = Math.floor(Math.random() * this.attackBuffs.length);
+      return this.attackBuffs[buffIndex];
+    }
+    dealAttackDamage(target, baseDamage) {
+      const attackBuff = this.rollAttackBuff();
+      if (attackBuff > 0) {
+        writeLog(this.name + " received a +" + attackBuff + " attack buff.");
+      }
+      target.takeDamage(baseDamage + attackBuff);
+    }
   };
 
-  // Personagens/wizard.ts
-  var Wizard = class extends Personagem {
+  // Characters/wizard.ts
+  var Wizard = class extends Character {
     // Mago: alto dano e cura forte, mas pouca vida e baixa defesa.
-    constructor(nome, forca, vida, defesa, cura, imagemNormal, imagemPoucaVida) {
-      super(nome, forca, vida, defesa, cura, imagemNormal, imagemPoucaVida);
+    constructor(name, strength, health, defense, heal, normalImage, lowHealthImage) {
+      super(name, strength, health, defense, heal, normalImage, lowHealthImage);
     }
-    atacar(persona) {
-      const magia = this.gerarAtaque();
-      if (magia === 1) {
-        escreverLog(this.nome + " ataca com fogo.");
-        persona.sofrerDano(this.forca + 30);
-      } else if (magia === 2) {
-        escreverLog(this.nome + " ataca com terra.");
-        persona.sofrerDano(this.forca + 15);
-      } else {
-        escreverLog(this.nome + " ataca com gelo.");
-        persona.sofrerDano(this.forca + 20);
+    attack(target) {
+      const spell = this.rollAttack();
+      switch (spell) {
+        case 1:
+          writeLog(this.name + " attacks with fire.");
+          this.dealAttackDamage(target, this.strength);
+          break;
+        case 2:
+          writeLog(this.name + " attacks with earth.");
+          this.dealAttackDamage(target, this.strength);
+          break;
+        default:
+          writeLog(this.name + " attacks with ice.");
+          this.dealAttackDamage(target, this.strength);
+          break;
       }
     }
   };
 
-  // Personagens/knight.ts
-  var Knight = class extends Personagem {
+  // Characters/knight.ts
+  var Knight = class extends Character {
     // Cavaleiro: tanque da arena, com muita vida, alta defesa e dano mais estavel.
-    constructor(nome, forca, vida, defesa, cura, imagemNormal, imagemPoucaVida) {
-      super(nome, forca, vida, defesa, cura, imagemNormal, imagemPoucaVida);
+    constructor(name, strength, health, defense, heal, normalImage, lowHealthImage) {
+      super(name, strength, health, defense, heal, normalImage, lowHealthImage);
     }
-    atacar(persona) {
-      escreverLog(this.nome + " ataca com a espada.");
-      persona.sofrerDano(this.forca);
+    attack(target) {
+      writeLog(this.name + " attacks with a sword.");
+      this.dealAttackDamage(target, this.strength);
     }
   };
 
-  // Personagens/assassino.ts
-  var Assassino = class extends Personagem {
+  // Characters/assassin.ts
+  var Assassin = class extends Character {
     // Assassino: personagem agil, com vida media e chance de golpe critico.
-    constructor(nome, forca, vida, defesa, cura, imagemNormal, imagemPoucaVida) {
-      super(nome, forca, vida, defesa, cura, imagemNormal, imagemPoucaVida);
+    constructor(name, strength, health, defense, heal, normalImage, lowHealthImage) {
+      super(name, strength, health, defense, heal, normalImage, lowHealthImage);
     }
-    atacar(persona) {
-      const golpe = this.gerarAtaque();
-      if (golpe === 1) {
-        escreverLog(this.nome + " ataca com a adaga.");
-        persona.sofrerDano(this.forca);
-      } else if (golpe === 2) {
-        escreverLog(this.nome + " faz um corte r\xE1pido.");
-        persona.sofrerDano(this.forca + 15);
-      } else {
-        escreverLog(this.nome + " acerta um golpe critico pelas sombras.");
-        persona.sofrerDano(this.forca + 30);
+    attack(target) {
+      const strike = this.rollAttack();
+      switch (strike) {
+        case 1:
+          writeLog(this.name + " attacks with a dagger.");
+          this.dealAttackDamage(target, this.strength);
+          break;
+        case 2:
+          writeLog(this.name + " lands a quick slash.");
+          this.dealAttackDamage(target, this.strength);
+          break;
+        default:
+          writeLog(this.name + " lands a critical strike from the shadows.");
+          this.dealAttackDamage(target, this.strength);
+          break;
       }
     }
   };
 
-  // Personagens/banguela.ts
-  var Banguela = class extends Personagem {
+  // Characters/toothless.ts
+  var Toothless = class extends Character {
     // Banguela: atacante pesado, com bons golpes elementais e cura menor.
-    constructor(nome, forca, vida, defesa, cura, imagemNormal, imagemPoucaVida) {
-      super(nome, forca, vida, defesa, cura, imagemNormal, imagemPoucaVida);
+    constructor(name, strength, health, defense, heal, normalImage, lowHealthImage) {
+      super(name, strength, health, defense, heal, normalImage, lowHealthImage);
     }
-    atacar(persona) {
-      const bafo = this.gerarAtaque();
-      if (bafo === 1) {
-        escreverLog(this.nome + " ataca com bafo de plasma.");
-        persona.sofrerDano(this.forca + 40);
-      } else if (bafo === 2) {
-        escreverLog(this.nome + " ataca com bafo eletrico.");
-        persona.sofrerDano(this.forca + 35);
-      } else {
-        escreverLog(this.nome + " ataca com bafo de gelo.");
-        persona.sofrerDano(this.forca + 30);
+    attack(target) {
+      const breath = this.rollAttack();
+      switch (breath) {
+        case 1:
+          writeLog(this.name + " attacks with plasma breath.");
+          this.dealAttackDamage(target, this.strength);
+          break;
+        case 2:
+          writeLog(this.name + " attacks with electric breath.");
+          this.dealAttackDamage(target, this.strength);
+          break;
+        default:
+          writeLog(this.name + " attacks with ice breath.");
+          this.dealAttackDamage(target, this.strength);
+          break;
       }
     }
   };
 
-  // Personagens/arqueiro.ts
-  var Arqueiro = class extends Personagem {
+  // Characters/archer.ts
+  var Archer = class extends Character {
     // Arqueiro: lutador de alcance, com dano moderado e boa cura de seguranca.
-    constructor(nome, forca, vida, defesa, cura, imagemNormal, imagemPoucaVida) {
-      super(nome, forca, vida, defesa, cura, imagemNormal, imagemPoucaVida);
+    constructor(name, strength, health, defense, heal, normalImage, lowHealthImage) {
+      super(name, strength, health, defense, heal, normalImage, lowHealthImage);
     }
-    atacar(persona) {
-      const tiro = this.gerarAtaque();
-      if (tiro === 1) {
-        escreverLog(this.nome + " ataca com flecha de fogo.");
-        persona.sofrerDano(this.forca + 30);
-      } else if (tiro === 2) {
-        escreverLog(this.nome + " ataca com flecha de raio.");
-        persona.sofrerDano(this.forca + 35);
-      } else {
-        escreverLog(this.nome + " ataca com flecha de gelo.");
-        persona.sofrerDano(this.forca + 20);
+    attack(target) {
+      const shot = this.rollAttack();
+      switch (shot) {
+        case 1:
+          writeLog(this.name + " attacks with a fire arrow.");
+          this.dealAttackDamage(target, this.strength);
+          break;
+        case 2:
+          writeLog(this.name + " attacks with a lightning arrow.");
+          this.dealAttackDamage(target, this.strength);
+          break;
+        default:
+          writeLog(this.name + " attacks with an ice arrow.");
+          this.dealAttackDamage(target, this.strength);
+          break;
       }
     }
   };
 
   // main.ts
-  var IMAGENS_PERSONAGENS = {
-    cavaleiro: {
+  var CHARACTER_IMAGES = {
+    knight: {
       normal: "https://static.wikia.nocookie.net/sss/images/3/33/Knight1.jpg/revision/latest?cb=20180424234257&path-prefix=pt-br",
-      poucaVida: "imagens/cavaleiro.lowHp.png",
-      ataque: "imagens/cavaleiro.ataque.png"
+      lowHealth: "images/knight.lowHp.png",
+      attack: "images/knight.attack.png"
     },
-    mago: {
+    wizard: {
       normal: "https://preview.redd.it/i-am-going-for-a-full-mage-build-how-many-magic-and-health-v0-vnwm78x1apqe1.jpeg?auto=webp&s=29a3f57f4f5b6068fc69fff73ab3ab6d78a2a8bf",
-      poucaVida: "imagens/mago.lowHp.png",
-      ataque: "imagens/mago.ataque.png"
+      lowHealth: "images/wizard.lowHp.png",
+      attack: "images/wizard.attack.png"
     },
-    assassino: {
-      normal: "imagens/assassino.normal.webp",
-      poucaVida: "imagens/assassino.lowHp.png",
-      ataque: "imagens/assassino.ataque.png"
+    assassin: {
+      normal: "images/assassin.normal.webp",
+      lowHealth: "images/assassin.lowHp.png",
+      attack: "images/assassin.attack.png"
     },
-    banguela: {
-      normal: "imagens/banguela.normal.png",
-      poucaVida: "imagens/banguela.lowHp.jpg",
-      ataque: "imagens/banguela.ataque.png"
+    toothless: {
+      normal: "images/toothless.normal.png",
+      lowHealth: "images/toothless.lowHp.jpg",
+      attack: "images/toothless.attack.png"
     },
-    arqueiro: {
-      normal: "imagens/arqueiro.normal.png",
-      poucaVida: "imagens/arqueiro.lowHp.png",
-      ataque: "imagens/arqueiro.ataque.webp"
+    archer: {
+      normal: "images/archer.normal.png",
+      lowHealth: "images/archer.lowHp.png",
+      attack: "images/archer.attack.webp"
     }
   };
-  var jogadorUm;
-  var jogadorDois;
-  var tipoJogadorUm = "cavaleiro";
-  var tipoJogadorDois = "mago";
-  var turno = 1;
-  var jogoComecou = false;
-  var jogandoTurno = false;
-  var botaoStart = document.getElementById("botaojogar");
-  var botaoProximo = document.getElementById("proximo");
-  var botaoReiniciar = document.getElementById("reiniciar");
-  var seletorJogadorUm = document.getElementById("Trocar1");
-  var seletorJogadorDois = document.getElementById("Trocar2");
-  botaoStart.addEventListener("click", iniciarJogo);
-  botaoProximo.addEventListener("click", jogarTurno);
-  botaoReiniciar.addEventListener("click", reiniciarJogo);
-  seletorJogadorUm.addEventListener("change", trocarPersonagensAntesDaLuta);
-  seletorJogadorDois.addEventListener("change", trocarPersonagensAntesDaLuta);
-  function criarPersonagem(tipo) {
-    if (tipo === "cavaleiro") {
-      return new Knight(
-        "Cavaleiro",
-        75,
-        360,
-        60,
-        70,
-        IMAGENS_PERSONAGENS.cavaleiro.normal,
-        IMAGENS_PERSONAGENS.cavaleiro.poucaVida
-      );
+  var CHARACTER_CONFIGS = {
+    knight: {
+      CharacterClass: Knight,
+      name: "Knight",
+      strength: 75,
+      health: 360,
+      defense: 60,
+      heal: 70
+    },
+    wizard: {
+      CharacterClass: Wizard,
+      name: "Wizard",
+      strength: 95,
+      health: 190,
+      defense: 15,
+      heal: 150
+    },
+    assassin: {
+      CharacterClass: Assassin,
+      name: "Assassin",
+      strength: 70,
+      health: 230,
+      defense: 25,
+      heal: 80
+    },
+    toothless: {
+      CharacterClass: Toothless,
+      name: "Toothless",
+      strength: 105,
+      health: 240,
+      defense: 35,
+      heal: 60
+    },
+    archer: {
+      CharacterClass: Archer,
+      name: "Archer",
+      strength: 65,
+      health: 220,
+      defense: 20,
+      heal: 100
     }
-    if (tipo === "mago") {
-      return new Wizard(
-        "Mago",
-        95,
-        190,
-        15,
-        150,
-        IMAGENS_PERSONAGENS.mago.normal,
-        IMAGENS_PERSONAGENS.mago.poucaVida
-      );
-    }
-    if (tipo === "assassino") {
-      return new Assassino(
-        "Assassino",
-        70,
-        230,
-        25,
-        80,
-        IMAGENS_PERSONAGENS.assassino.normal,
-        IMAGENS_PERSONAGENS.assassino.poucaVida
-      );
-    }
-    if (tipo === "banguela") {
-      return new Banguela(
-        "Banguela",
-        105,
-        240,
-        35,
-        60,
-        IMAGENS_PERSONAGENS.banguela.normal,
-        IMAGENS_PERSONAGENS.banguela.poucaVida
-      );
-    }
-    if (tipo === "arqueiro") {
-      return new Arqueiro(
-        "Arqueiro",
-        65,
-        220,
-        20,
-        100,
-        IMAGENS_PERSONAGENS.arqueiro.normal,
-        IMAGENS_PERSONAGENS.arqueiro.poucaVida
-      );
-    }
-    throw new Error("Tipo de personagem invalido: " + tipo);
+  };
+  var playerOne;
+  var playerTwo;
+  var playerOneType = "knight";
+  var playerTwoType = "wizard";
+  var currentTurn = 1;
+  var gameStarted = false;
+  var isPlayingTurn = false;
+  var startButton = document.getElementById("start-button");
+  var nextTurnButton = document.getElementById("next-turn");
+  var restartButton = document.getElementById("restart");
+  var playerOneSelector = document.getElementById("PlayerOneSelect");
+  var playerTwoSelector = document.getElementById("PlayerTwoSelect");
+  startButton.addEventListener("click", startGame);
+  nextTurnButton.addEventListener("click", playTurn);
+  restartButton.addEventListener("click", restartGame);
+  playerOneSelector.addEventListener("change", changeCharactersBeforeBattle);
+  playerTwoSelector.addEventListener("change", changeCharactersBeforeBattle);
+  function createCharacter(type) {
+    return buildCharacter(type);
   }
-  function getTipoSelecionado(seletor) {
-    const valor = seletor.value;
-    if (valor === "mago" || valor === "assassino" || valor === "cavaleiro" || valor === "banguela" || valor === "arqueiro") {
-      return valor;
+  function buildCharacter(type) {
+    const config = CHARACTER_CONFIGS[type];
+    const images = CHARACTER_IMAGES[type];
+    return new config.CharacterClass(
+      config.name,
+      config.strength,
+      config.health,
+      config.defense,
+      config.heal,
+      images.normal,
+      images.lowHealth
+    );
+  }
+  function getSelectedType(selector) {
+    const value = selector.value;
+    if (value === "wizard" || value === "assassin" || value === "knight" || value === "toothless" || value === "archer") {
+      return value;
     }
-    return "cavaleiro";
+    return "knight";
   }
-  function prepararPersonagensPelosSeletores() {
-    tipoJogadorUm = getTipoSelecionado(seletorJogadorUm);
-    tipoJogadorDois = getTipoSelecionado(seletorJogadorDois);
-    jogadorUm = criarPersonagem(tipoJogadorUm);
-    jogadorDois = criarPersonagem(tipoJogadorDois);
+  function prepareCharactersFromSelectors() {
+    playerOneType = getSelectedType(playerOneSelector);
+    playerTwoType = getSelectedType(playerTwoSelector);
+    playerOne = createCharacter(playerOneType);
+    playerTwo = createCharacter(playerTwoType);
   }
-  function trocarPersonagensAntesDaLuta() {
-    if (jogoComecou || jogandoTurno) {
+  function changeCharactersBeforeBattle() {
+    if (gameStarted || isPlayingTurn) {
       return;
     }
-    prepararPersonagensPelosSeletores();
-    atualizarTela();
+    prepareCharactersFromSelectors();
+    updateScreen();
   }
-  function iniciarJogo() {
-    prepararPersonagensPelosSeletores();
-    turno = 1;
-    jogoComecou = true;
-    jogandoTurno = false;
+  function startGame() {
+    prepareCharactersFromSelectors();
+    currentTurn = 1;
+    gameStarted = true;
+    isPlayingTurn = false;
     const log = document.getElementById("log");
     log.innerHTML = "";
-    escreverLog2("A batalha comecou!");
-    escreverLog2("Jogador 1 escolheu: " + jogadorUm.nome + ".");
-    escreverLog2("Jogador 2 escolheu: " + jogadorDois.nome + ".");
-    escreverLog2("Clique em PROXIMO TURNO para continuar.");
-    botaoStart.disabled = true;
-    botaoProximo.disabled = false;
-    seletorJogadorUm.disabled = true;
-    seletorJogadorDois.disabled = true;
-    atualizarTela();
+    writeLog2("The battle has started!");
+    writeLog2("Player 1 chose: " + playerOne.name + ".");
+    writeLog2("Player 2 chose: " + playerTwo.name + ".");
+    writeLog2("Click NEXT TURN to continue.");
+    startButton.disabled = true;
+    nextTurnButton.disabled = false;
+    playerOneSelector.disabled = true;
+    playerTwoSelector.disabled = true;
+    updateScreen();
   }
-  async function jogarTurno() {
-    if (!jogoComecou || jogandoTurno) {
+  async function playTurn() {
+    if (!gameStarted || isPlayingTurn) {
       return;
     }
-    jogandoTurno = true;
-    botaoProximo.disabled = true;
-    escreverLog2("---------------- Turno " + turno + " ----------------");
-    await executarAnimacaoAtaque(
-      "imgjoggadorUm",
-      "imgjoggadorDois",
-      "atacando-direita",
-      IMAGENS_PERSONAGENS[tipoJogadorUm].ataque,
-      jogadorUm,
+    isPlayingTurn = true;
+    nextTurnButton.disabled = true;
+    writeLog2("---------------- Turn " + currentTurn + " ----------------");
+    await runAttackAnimation(
+      "player-one-image",
+      "player-two-image",
+      "attacking-right",
+      CHARACTER_IMAGES[playerOneType].attack,
+      playerOne,
       function() {
-        jogadorUm.atacar(jogadorDois);
+        playerOne.attack(playerTwo);
       }
     );
-    jogadorDois.usarCura();
-    atualizarTela();
-    if (!jogadorDois.continuaVivo()) {
-      finalizarJogo(jogadorUm.nome);
-      jogandoTurno = false;
+    playerTwo.useHeal();
+    updateScreen();
+    if (!playerTwo.isAlive()) {
+      endGame(playerOne.name);
+      isPlayingTurn = false;
       return;
     }
-    await esperar(250);
-    await executarAnimacaoAtaque(
-      "imgjoggadorDois",
-      "imgjoggadorUm",
-      "atacando-esquerda",
-      IMAGENS_PERSONAGENS[tipoJogadorDois].ataque,
-      jogadorDois,
+    await wait(250);
+    await runAttackAnimation(
+      "player-two-image",
+      "player-one-image",
+      "attacking-left",
+      CHARACTER_IMAGES[playerTwoType].attack,
+      playerTwo,
       function() {
-        jogadorDois.atacar(jogadorUm);
+        playerTwo.attack(playerOne);
       }
     );
-    jogadorUm.usarCura();
-    atualizarTela();
-    if (!jogadorUm.continuaVivo()) {
-      finalizarJogo(jogadorDois.nome);
-      jogandoTurno = false;
+    playerOne.useHeal();
+    updateScreen();
+    if (!playerOne.isAlive()) {
+      endGame(playerTwo.name);
+      isPlayingTurn = false;
       return;
     }
-    turno = turno + 1;
-    jogandoTurno = false;
-    botaoProximo.disabled = false;
-    atualizarTela();
+    currentTurn = currentTurn + 1;
+    isPlayingTurn = false;
+    nextTurnButton.disabled = false;
+    updateScreen();
   }
-  function finalizarJogo(vencedor) {
-    atualizarTela();
-    escreverLog2("================ FIM DE JOGO ================");
-    escreverLog2(vencedor + " ganhou a luta!");
-    botaoProximo.disabled = true;
-    botaoStart.disabled = false;
-    seletorJogadorUm.disabled = false;
-    seletorJogadorDois.disabled = false;
-    jogoComecou = false;
+  function endGame(winner) {
+    updateScreen();
+    writeLog2("================ GAME OVER ================");
+    writeLog2(winner + " won the fight!");
+    nextTurnButton.disabled = true;
+    startButton.disabled = false;
+    playerOneSelector.disabled = false;
+    playerTwoSelector.disabled = false;
+    gameStarted = false;
   }
-  function reiniciarJogo() {
-    jogoComecou = false;
-    jogandoTurno = false;
-    turno = 1;
-    prepararPersonagensPelosSeletores();
-    botaoStart.disabled = false;
-    botaoProximo.disabled = true;
-    seletorJogadorUm.disabled = false;
-    seletorJogadorDois.disabled = false;
+  function restartGame() {
+    gameStarted = false;
+    isPlayingTurn = false;
+    currentTurn = 1;
+    prepareCharactersFromSelectors();
+    startButton.disabled = false;
+    nextTurnButton.disabled = true;
+    playerOneSelector.disabled = false;
+    playerTwoSelector.disabled = false;
     const log = document.getElementById("log");
-    log.innerHTML = "Escolha os personagens e clique em START para comecar a batalha.";
-    removerClassesDeAnimacao();
-    atualizarTela();
+    log.innerHTML = "Choose the characters and click START to begin the battle.";
+    removeAnimationClasses();
+    updateScreen();
   }
-  function atualizarTela(idImagemIgnorada = "") {
-    if (!jogadorUm || !jogadorDois) {
+  function updateScreen(ignoredImageId = "") {
+    if (!playerOne || !playerTwo) {
       return;
     }
-    atualizarCardPersonagem(
-      jogadorUm,
-      "nome-jogador-um",
-      "hp-jogador-um",
-      "barra-jogador-um",
-      "imgjoggadorUm",
-      "card-jogador-um",
-      idImagemIgnorada
+    updateCharacterCard(
+      playerOne,
+      "player-one-name",
+      "player-one-hp",
+      "player-one-health-bar",
+      "player-one-image",
+      "player-one-card",
+      ignoredImageId
     );
-    atualizarCardPersonagem(
-      jogadorDois,
-      "nome-jogador-dois",
-      "hp-jogador-dois",
-      "barra-jogador-dois",
-      "imgjoggadorDois",
-      "card-jogador-dois",
-      idImagemIgnorada
+    updateCharacterCard(
+      playerTwo,
+      "player-two-name",
+      "player-two-hp",
+      "player-two-health-bar",
+      "player-two-image",
+      "player-two-card",
+      ignoredImageId
     );
   }
-  function atualizarCardPersonagem(personagem, idNome, idHp, idBarra, idImagem, idCard, idImagemIgnorada) {
-    const nome = document.getElementById(idNome);
-    const hp = document.getElementById(idHp);
-    nome.textContent = personagem.nome;
-    hp.textContent = "HP: " + personagem.getVida() + " / " + personagem.getVidaMaxima();
-    atualizarBarraDeVida(idBarra, personagem);
-    if (idImagem !== idImagemIgnorada) {
-      atualizarImagemPersonagem(idImagem, idCard, personagem);
+  function updateCharacterCard(character, nameId, hpId, healthBarId, imageId, cardId, ignoredImageId) {
+    const name = document.getElementById(nameId);
+    const hp = document.getElementById(hpId);
+    name.textContent = character.name;
+    hp.textContent = "HP: " + character.getHealth() + " / " + character.getMaxHealth();
+    updateHealthBar(healthBarId, character);
+    if (imageId !== ignoredImageId) {
+      updateCharacterImage(imageId, cardId, character);
     } else {
-      atualizarCardVidaBaixa(idCard, personagem);
+      updateLowHealthCard(cardId, character);
     }
   }
-  function atualizarBarraDeVida(idBarra, personagem) {
-    const barra = document.getElementById(idBarra);
-    const porcentagem = personagem.getPorcentagemVida();
-    barra.style.width = porcentagem + "%";
-    barra.classList.remove("vida-amarela", "vida-vermelha");
-    if (porcentagem <= 35) {
-      barra.classList.add("vida-vermelha");
-    } else if (porcentagem <= 60) {
-      barra.classList.add("vida-amarela");
+  function updateHealthBar(healthBarId, character) {
+    const healthBar = document.getElementById(healthBarId);
+    const percentage = character.getHealthPercentage();
+    healthBar.style.width = percentage + "%";
+    healthBar.classList.remove("health-yellow", "health-red");
+    if (percentage <= 35) {
+      healthBar.classList.add("health-red");
+    } else if (percentage <= 60) {
+      healthBar.classList.add("health-yellow");
     }
   }
-  function atualizarImagemPersonagem(idImagem, idCard, personagem) {
-    const imagem = document.getElementById(idImagem);
-    const novaImagem = personagem.getImg();
-    if (imagem.getAttribute("src") !== novaImagem) {
-      imagem.setAttribute("src", novaImagem);
+  function updateCharacterImage(imageId, cardId, character) {
+    const image = document.getElementById(imageId);
+    const newImage = character.getImage();
+    if (image.getAttribute("src") !== newImage) {
+      image.setAttribute("src", newImage);
     }
-    imagem.setAttribute("alt", personagem.nome);
-    atualizarCardVidaBaixa(idCard, personagem);
+    image.setAttribute("alt", character.name);
+    updateLowHealthCard(cardId, character);
   }
-  function atualizarCardVidaBaixa(idCard, personagem) {
-    const card = document.getElementById(idCard);
-    if (personagem.estaComPoucaVida()) {
-      card.classList.add("vida-baixa");
+  function updateLowHealthCard(cardId, character) {
+    const card = document.getElementById(cardId);
+    if (character.hasLowHealth()) {
+      card.classList.add("low-health");
     } else {
-      card.classList.remove("vida-baixa");
+      card.classList.remove("low-health");
     }
   }
-  async function executarAnimacaoAtaque(idImagemAtacante, idImagemDefensor, classeAtaque, imagemAtaque, personagemAtacante, acaoAtaque) {
-    const imagemAtacante = document.getElementById(idImagemAtacante);
-    const imagemDefensor = document.getElementById(idImagemDefensor);
-    imagemAtacante.classList.remove(classeAtaque);
-    imagemDefensor.classList.remove("recebendo-dano");
-    void imagemAtacante.offsetWidth;
-    if (imagemAtaque.trim() !== "") {
-      imagemAtacante.setAttribute("src", imagemAtaque);
+  async function runAttackAnimation(attackerImageId, defenderImageId, attackClass, attackImage, attacker, attackAction) {
+    const attackerImage = document.getElementById(attackerImageId);
+    const defenderImage = document.getElementById(defenderImageId);
+    attackerImage.classList.remove(attackClass);
+    defenderImage.classList.remove("taking-damage");
+    void attackerImage.offsetWidth;
+    if (attackImage.trim() !== "") {
+      attackerImage.setAttribute("src", attackImage);
     }
-    imagemAtacante.classList.add(classeAtaque);
-    await esperar(520);
-    acaoAtaque();
-    imagemDefensor.classList.add("recebendo-dano");
-    atualizarTela(idImagemAtacante);
-    await esperar(520);
-    imagemAtacante.classList.remove(classeAtaque);
-    imagemDefensor.classList.remove("recebendo-dano");
-    imagemAtacante.setAttribute("src", personagemAtacante.getImg());
-    atualizarTela();
+    attackerImage.classList.add(attackClass);
+    await wait(520);
+    attackAction();
+    defenderImage.classList.add("taking-damage");
+    updateScreen(attackerImageId);
+    await wait(520);
+    attackerImage.classList.remove(attackClass);
+    defenderImage.classList.remove("taking-damage");
+    attackerImage.setAttribute("src", attacker.getImage());
+    updateScreen();
   }
-  function removerClassesDeAnimacao() {
-    const imgJogadorUm = document.getElementById("imgjoggadorUm");
-    const imgJogadorDois = document.getElementById("imgjoggadorDois");
-    imgJogadorUm.classList.remove("atacando-direita", "atacando-esquerda", "recebendo-dano");
-    imgJogadorDois.classList.remove("atacando-direita", "atacando-esquerda", "recebendo-dano");
+  function removeAnimationClasses() {
+    const playerOneImage = document.getElementById("player-one-image");
+    const playerTwoImage = document.getElementById("player-two-image");
+    playerOneImage.classList.remove("attacking-right", "attacking-left", "taking-damage");
+    playerTwoImage.classList.remove("attacking-right", "attacking-left", "taking-damage");
   }
-  function esperar(tempo) {
+  function wait(time) {
     return new Promise(function(resolve) {
-      setTimeout(resolve, tempo);
+      setTimeout(resolve, time);
     });
   }
-  function escreverLog2(texto) {
+  function writeLog2(text) {
     const log = document.getElementById("log");
-    log.innerHTML += "<div class='linha-log'>" + texto + "</div>";
+    log.innerHTML += "<div class='log-line'>" + text + "</div>";
     log.scrollTop = log.scrollHeight;
-    console.log(texto);
+    console.log(text);
   }
-  window.escreverLog = escreverLog2;
-  reiniciarJogo();
+  window.writeLog = writeLog2;
+  restartGame();
 })();
