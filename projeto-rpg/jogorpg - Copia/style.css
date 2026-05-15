@@ -9,7 +9,7 @@ body {
     color: white;
 }
 
-.centered {
+.centralizada {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -23,7 +23,7 @@ h1 {
     text-shadow: 0 0 12px black;
 }
 
-.image-warning {
+.aviso-imagens {
     width: 90%;
     max-width: 950px;
     margin: 0 auto 18px auto;
@@ -36,7 +36,7 @@ h1 {
     text-align: center;
 }
 
-.align {
+.alinhar {
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -48,7 +48,7 @@ h1 {
     gap: 25px;
 }
 
-.character-card {
+.card-personagem {
     background: #24243e;
     border: 2px solid #44446b;
     border-radius: 14px;
@@ -59,7 +59,7 @@ h1 {
     transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-.selection-area {
+.area-selecao {
     display: flex;
     gap: 10px;
     justify-content: center;
@@ -67,7 +67,7 @@ h1 {
     margin-bottom: 12px;
 }
 
-.selection-area label {
+.area-selecao label {
     font-weight: bold;
     color: #ffdd66;
 }
@@ -87,7 +87,7 @@ select:disabled {
     cursor: not-allowed;
 }
 
-.character-card img {
+.card-personagem img {
     width: 400px;
     height: 250px;
     max-width: 100%;
@@ -97,11 +97,11 @@ select:disabled {
     transition: transform 0.2s, filter 0.2s, border-color 0.2s;
 }
 
-.character-card h2 {
+.card-personagem h2 {
     margin: 12px 0 5px 0;
 }
 
-.character-card h3 {
+.card-personagem h3 {
     margin: 6px 0 10px 0;
 }
 
@@ -116,7 +116,7 @@ select:disabled {
     text-shadow: 0 0 14px #000;
 }
 
-.health-bar {
+.barra-vida {
     width: 100%;
     height: 24px;
     background: #3b3b3b;
@@ -125,57 +125,57 @@ select:disabled {
     overflow: hidden;
 }
 
-.health {
+.vida {
     height: 100%;
     width: 100%;
     background: linear-gradient(90deg, #29c44d, #7dff91);
     transition: width 0.4s, background 0.4s;
 }
 
-.health.health-yellow {
+.vida.vida-amarela {
     background: linear-gradient(90deg, #d6b51f, #fff176);
 }
 
-.health.health-red {
+.vida.vida-vermelha {
     background: linear-gradient(90deg, #b91c1c, #ff5252);
 }
 
-.low-health {
+.vida-baixa {
     border-color: #ff5252;
     box-shadow: 0 0 22px rgba(255, 82, 82, 0.55);
-    animation: lowHealthPulse 0.9s infinite alternate;
+    animation: pulsoVidaBaixa 0.9s infinite alternate;
 }
 
-.low-health img {
+.vida-baixa img {
     border-color: #ff5252;
     filter: saturate(1.15) contrast(1.08);
 }
 
-.attacking-right {
-    animation: attackRight 0.75s ease-in-out;
+.atacando-direita {
+    animation: atacarDireita 0.75s ease-in-out;
 }
 
-.attacking-left {
-    animation: attackLeft 0.75s ease-in-out;
+.atacando-esquerda {
+    animation: atacarEsquerda 0.75s ease-in-out;
 }
 
-.taking-damage {
-    animation: takeDamage 0.45s ease-in-out;
+.recebendo-dano {
+    animation: receberDano 0.45s ease-in-out;
 }
 
-@keyframes attackRight {
+@keyframes atacarDireita {
     0% { transform: translateX(0) scale(1); }
     45% { transform: translateX(34px) scale(1.06) rotate(1deg); }
     100% { transform: translateX(0) scale(1); }
 }
 
-@keyframes attackLeft {
+@keyframes atacarEsquerda {
     0% { transform: translateX(0) scale(1); }
     45% { transform: translateX(-34px) scale(1.06) rotate(-1deg); }
     100% { transform: translateX(0) scale(1); }
 }
 
-@keyframes takeDamage {
+@keyframes receberDano {
     0% { transform: translateX(0); filter: brightness(1); }
     20% { transform: translateX(-8px); filter: brightness(1.8) sepia(1) hue-rotate(-45deg) saturate(3); }
     40% { transform: translateX(8px); }
@@ -184,12 +184,12 @@ select:disabled {
     100% { transform: translateX(0); filter: brightness(1); }
 }
 
-@keyframes lowHealthPulse {
+@keyframes pulsoVidaBaixa {
     from { box-shadow: 0 0 12px rgba(255, 82, 82, 0.35); }
     to { box-shadow: 0 0 26px rgba(255, 82, 82, 0.85); }
 }
 
-.buttons {
+.botoes {
     gap: 15px;
     margin: 25px 0;
 }
@@ -243,12 +243,12 @@ button:disabled {
     font-family: Consolas, monospace;
 }
 
-.log-line {
+.linha-log {
     margin-bottom: 6px;
 }
 
 @media (max-width: 950px) {
-    .align {
+    .alinhar {
         flex-direction: column;
     }
 

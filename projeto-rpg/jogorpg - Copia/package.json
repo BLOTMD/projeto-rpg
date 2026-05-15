@@ -1,7 +1,7 @@
 {
-  "name": "rpg-game",
+  "name": "jogorpg-assassino-troca",
   "version": "1.0.0",
-  "description": "Turn-based RPG battle game with character selection, attack animations, low-health states, and healing",
+  "description": "Jogo RPG com Assassino, animação de ataque, pouca vida e troca de personagem",
   "main": "rungame.js",
   "scripts": {
     "build": "esbuild main.ts --bundle --outfile=rungame.js --platform=browser",

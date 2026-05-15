@@ -1,42 +1,43 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Batalha Épica</title>
+    <title>Epic Battle</title>
 </head>
 <body>
-
-    <!-- Titulo principal do jogo. -->
-    <div class="centralizada">
-        <h1>BATALHA ÉPICA</h1>
+    <!-- Titulo principal exibido acima da arena. -->
+    <div class="centered">
+        <h1>EPIC BATTLE</h1>
     </div>
 
     <!-- Arena com os dois cards dos jogadores. -->
-    <div class="alinhar arena">
-        <div class="card-personagem" id="card-jogador-um">
+    <div class="align arena">
+        <div class="character-card" id="player-one-card">
             <!-- Selecao do personagem do jogador 1 antes da batalha comecar. -->
-            <div class="area-selecao">
-                <label for="Trocar1">Jogador 1</label>
-                <select name="Trocar personagem" id="Trocar1">
-                    <option value="cavaleiro">Cavaleiro</option>
-                    <option value="mago">Mago</option>
-                    <option value="assassino">Assassino</option>
+            <div class="selection-area">
+                <label for="PlayerOneSelect">Player 1</label>
+                <select name="Change character" id="PlayerOneSelect">
+                    <option value="knight">Knight</option>
+                    <option value="wizard">Wizard</option>
+                    <option value="assassin">Assassin</option>
+                    <option value="toothless">Toothless</option>
+                    <option value="archer" selected>Archer</option>
                 </select>
             </div>
 
-            <img id="imgjoggadorUm"
+            <img id="player-one-image"
                  src=""
-                 alt="Jogador 1"
+                 alt="Player 1"
                  height="250"
                  width="400">
 
-            <h2 id="nome-jogador-um">Cavaleiro</h2>
-            <h3 id="hp-jogador-um">HP: 300</h3>
+            <h2 id="player-one-name">Knight</h2>
+            <h3 id="player-one-hp">HP: 300</h3>
 
-            <div class="barra-vida">
-                <div id="barra-jogador-um" class="vida"></div>
+            <div class="health-bar">
+                <div id="player-one-health-bar" class="health"></div>
             </div>
         </div>
 
@@ -44,44 +45,46 @@
             <h2>VS</h2>
         </div>
 
-        <div class="card-personagem" id="card-jogador-dois">
+        <div class="character-card" id="player-two-card">
             <!-- Selecao do personagem do jogador 2 antes da batalha comecar. -->
-            <div class="area-selecao">
-                <label for="Trocar2">Jogador 2</label>
-                <select name="Trocar personagem" id="Trocar2">
-                    <option value="cavaleiro">Cavaleiro</option>
-                    <option value="mago" selected>Mago</option>
-                    <option value="assassino">Assassino</option>
+            <div class="selection-area">
+                <label for="PlayerTwoSelect">Player 2</label>
+                <select name="Change character" id="PlayerTwoSelect">
+                    <option value="knight">Knight</option>
+                    <option value="wizard" selected>Wizard</option>
+                    <option value="assassin">Assassin</option>
+                    <option value="toothless">Toothless</option>
+                    <option value="archer">Archer</option>
                 </select>
             </div>
 
-            <img id="imgjoggadorDois"
+            <img id="player-two-image"
                  src=""
-                 alt="Jogador 2"
+                 alt="Player 2"
                  height="250"
                  width="400">
 
-            <h2 id="nome-jogador-dois">Mago</h2>
-            <h3 id="hp-jogador-dois">HP: 200</h3>
+            <h2 id="player-two-name">Wizard</h2>
+            <h3 id="player-two-hp">HP: 200</h3>
 
-            <div class="barra-vida">
-                <div id="barra-jogador-dois" class="vida"></div>
+            <div class="health-bar">
+                <div id="player-two-health-bar" class="health"></div>
             </div>
         </div>
     </div>
 
     <!-- Botoes que controlam inicio, avanco de turno e reinicio da batalha. -->
-    <div class="centralizada botoes">
-        <button id="botaojogar">START</button>
-        <button id="proximo" disabled>PRÓXIMO TURNO</button>
-        <button id="reiniciar">REINICIAR</button>
+    <div class="centered buttons">
+        <button id="start-button">START</button>
+        <button id="next-turn" disabled>NEXT TURN</button>
+        <button id="restart">RESTART</button>
     </div>
 
     <!-- Area onde o JavaScript escreve o historico dos ataques e curas. -->
     <div class="console">
-        <h2>Console.log</h2>
+        <h2>Battle Log</h2>
         <div id="log">
-            Escolha os personagens e clique em START para começar a batalha.
+            Choose the characters and click START to begin the battle.
         </div>
     </div>
 

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Batalha Épica</title>
+</head>
+<body>
+
+    <!-- Titulo principal do jogo. -->
+    <div class="centralizada">
+        <h1>BATALHA ÉPICA</h1>
+    </div>
+
+    <!-- Arena com os dois cards dos jogadores. -->
+    <div class="alinhar arena">
+        <div class="card-personagem" id="card-jogador-um">
+            <!-- Selecao do personagem do jogador 1 antes da batalha comecar. -->
+            <div class="area-selecao">
+                <label for="Trocar1">Jogador 1</label>
+                <select name="Trocar personagem" id="Trocar1">
+                    <option value="cavaleiro">Cavaleiro</option>
+                    <option value="mago">Mago</option>
+                    <option value="assassino">Assassino</option>
+                </select>
+            </div>
+
+            <img id="imgjoggadorUm"
+                 src=""
+                 alt="Jogador 1"
+                 height="250"
+                 width="400">
+
+            <h2 id="nome-jogador-um">Cavaleiro</h2>
+            <h3 id="hp-jogador-um">HP: 300</h3>
+
+            <div class="barra-vida">
+                <div id="barra-jogador-um" class="vida"></div>
+            </div>
+        </div>
+
+        <div class="vs">
+            <h2>VS</h2>
+        </div>
+
+        <div class="card-personagem" id="card-jogador-dois">
+            <!-- Selecao do personagem do jogador 2 antes da batalha comecar. -->
+            <div class="area-selecao">
+                <label for="Trocar2">Jogador 2</label>
+                <select name="Trocar personagem" id="Trocar2">
+                    <option value="cavaleiro">Cavaleiro</option>
+                    <option value="mago" selected>Mago</option>
+                    <option value="assassino">Assassino</option>
+                </select>
+            </div>
+
+            <img id="imgjoggadorDois"
+                 src=""
+                 alt="Jogador 2"
+                 height="250"
+                 width="400">
+
+            <h2 id="nome-jogador-dois">Mago</h2>
+            <h3 id="hp-jogador-dois">HP: 200</h3>
+
+            <div class="barra-vida">
+                <div id="barra-jogador-dois" class="vida"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botoes que controlam inicio, avanco de turno e reinicio da batalha. -->
+    <div class="centralizada botoes">
+        <button id="botaojogar">START</button>
+        <button id="proximo" disabled>PRÓXIMO TURNO</button>
+        <button id="reiniciar">REINICIAR</button>
+    </div>
+
+    <!-- Area onde o JavaScript escreve o historico dos ataques e curas. -->
+    <div class="console">
+        <h2>Console.log</h2>
+        <div id="log">
+            Escolha os personagens e clique em START para começar a batalha.
+        </div>
+    </div>
+
+    <!-- Arquivo gerado a partir do TypeScript para rodar o jogo no navegador. -->
+    <script type="module" src="rungame.js"></script>
+</body>
+</html>
